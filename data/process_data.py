@@ -35,10 +35,7 @@ def load_data(messages_filepath: str, categories_filepath: str) -> pd.DataFrame:
     
     # concatenate the original dataframe with the new `categories` dataframe
     df = pd.concat([df, categories], axis=1)
-    
-    #print(f'df: {df.dtypes}')
-    #print(f'df.shape{df.shape}')
-    
+        
     return df
     
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
