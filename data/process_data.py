@@ -2,6 +2,8 @@ import sys
 import pandas as pd
 from sqlalchemy import create_engine
 
+category_colnames = []
+
 def load_data(messages_filepath: str, categories_filepath: str) -> pd.DataFrame:
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
@@ -9,7 +11,7 @@ def load_data(messages_filepath: str, categories_filepath: str) -> pd.DataFrame:
     categories = pd.read_csv(categories_filepath)
     
     # merge datasets
-    df = pd.merge(messages, categories, on='id')
+    df = pd.merge(messages, categories, on='id', how='inner')
     
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';', expand=True)
@@ -39,6 +41,8 @@ def load_data(messages_filepath: str, categories_filepath: str) -> pd.DataFrame:
     return df
     
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
+    # drop nan
+    df.dropna(subset=category_colnames, inplace=True)
     # drop duplicates
     df.drop_duplicates(subset='message', inplace=True)
     # fix some 'outliers'
