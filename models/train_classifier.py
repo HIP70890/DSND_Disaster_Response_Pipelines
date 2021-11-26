@@ -38,32 +38,36 @@ def load_data(database_filepath: str):
 # initialize single lemmatizer
 lemmatizer = WordNetLemmatizer()
 
+# create a tokenizer funtion which will tokenize sentenses, dropping punctuation, and removing stop words
 def tokenize(text: str) -> list:
+    # normalize, tokenize, and only select alphanumeric tokens
     words = [word for word in word_tokenize(text.lower()) if word.isalnum()]
+    # remove stopwords (english) and lemmatize
     return [lemmatizer.lemmatize(word) for word in words if word not in stopwords.words('english')]
 
+# Build the model, based on the results of the exploration
 def build_model():
-    rfc = RandomForestClassifier(random_state=42)
+    rfc = RandomForestClassifier(random_state=42, min_samples_split=6, n_estimators=100)
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize)),
+        ('vect', CountVectorizer(tokenizer=tokenize, max_df=0.8)),
         ('tfidf', TfidfTransformer()),
         ('mclf', MultiOutputClassifier(rfc, n_jobs=-1))
     ])
 
-    parameters = {
-        #'mclf__estimator__n_estimators': [100, 110],
-        'mclf__estimator__min_samples_split': [2, 4, 6, 8]
-    }
-
-    return GridSearchCV(pipeline, param_grid=parameters)
+    return pipeline
 
 
 def evaluate_model(model, X_test: pd.DataFrame, Y_test: pd.DataFrame, category_names: list):
     y_pred = model.predict(X_test)
 
+    # print score per feature
     for i, column in enumerate(category_names):
         print(column)
-        print(classification_report(y_test[column], y_pred[:, i]))
+        print(classification_report(Y_test[column], y_pred[:, i]))
+
+    # print accuracy
+    accuracy = (y_pred == Y_test.values).mean()
+    print('Model accuracy is {:.3f}'.format(accuracy))
 
         
 def save_model(model, model_filepath):
