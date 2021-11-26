@@ -12,7 +12,8 @@ The solution is a completelly python-based implementation, that uses different o
 2. Machine learning
 3. Web presentation, and human interface
 ### Data Engineering
-There is a Jupyther notebook that was being used to explore the data and prepare it for ML: [ETL Pipeline Preparation,ipynb](notebooks/ETL%20Pipeline%20Preparation.ipynb)
+There is a Jupyther notebook that was being used to explore the data and prepare it for ML: [ETL Pipeline Preparation,ipynb](notebooks/ETL%20Pipeline%20Preparation.ipynb).
+
 Furthermore, the pipeline has been transformed into a python file: [process_data.py](data/process_data.py)
 ### Machine Learning
 - sklearn: For training specific machine learning algorithsm
