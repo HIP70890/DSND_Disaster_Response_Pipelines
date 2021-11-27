@@ -52,7 +52,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 def save_data(df: pd.DataFrame, database_filename: str):
     # create engine for storing into SQLDB
     engine = create_engine('sqlite:///' + database_filename)
-    df.to_sql('messages', engine, index=False)
+    df.to_sql('messages', engine, index=False, if_exists='replace')
 
 def main():
     if len(sys.argv) == 4:

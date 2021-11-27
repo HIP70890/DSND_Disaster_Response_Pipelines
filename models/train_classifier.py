@@ -47,14 +47,21 @@ def tokenize(text: str) -> list:
 
 # Build the model, based on the results of the exploration
 def build_model():
-    rfc = RandomForestClassifier(random_state=42, min_samples_split=6, n_estimators=100)
+    rfc = RandomForestClassifier(random_state=42)
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize, max_df=0.8)),
+        ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
         ('mclf', MultiOutputClassifier(rfc, n_jobs=-1))
     ])
 
-    return pipeline
+    parameters = {
+        'vect__max_df': (0.8, 0.9),
+        'mclf__estimator__min_samples_split': [6, 8],
+        'mclf__estimator__n_estimators': [10, 100]
+    }
+
+    cv = GridSearchCV(pipeline, param_grid=parameters, verbose=10)
+    return cv
 
 
 def evaluate_model(model, X_test: pd.DataFrame, Y_test: pd.DataFrame, category_names: list):
