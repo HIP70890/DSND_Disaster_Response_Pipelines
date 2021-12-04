@@ -131,3 +131,5 @@ dmypy.json
 **/*.db
 .vscode/settings.json
 **/.DS_Store
+models/classifier.pkl
+notebooks/DisasterResponseModel.pickle
